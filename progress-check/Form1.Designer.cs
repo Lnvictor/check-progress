@@ -127,9 +127,19 @@
 
             string answersFullPath = $"{AnswersPath}\\{selectedDate.Month.ToString()}{selectedDate.Day.ToString()}.txt";
             Dictionary<string, bool> answers = new Dictionary<string, bool>();
-            answers.Add("Exercise", true);
-            answers.Add("Study", true);
-            answers.Add("Focus", true);
+
+            if (File.Exists(answersFullPath))
+            {
+                using (StreamReader inputFile = new StreamReader(answersFullPath))
+                {
+                    string text = inputFile.ReadToEnd();
+                    string[] lines = text.Split('\n');
+
+                    answers.Add("Exercise", Boolean.Parse(lines[0]));
+                    answers.Add("Study", Boolean.Parse(lines[1]));
+                    answers.Add("Focus", Boolean.Parse(lines[2]));
+                }
+            }
 
             return answers;
         }
