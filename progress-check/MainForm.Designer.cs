@@ -1,6 +1,6 @@
 ﻿namespace progress_check
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -32,8 +32,9 @@
             exerciseCheckBox = new CheckBox();
             studyCheckBox = new CheckBox();
             workWithFocusCheckBox = new CheckBox();
-            button1 = new Button();
+            saveButton = new Button();
             SuspendLayout();
+
             // 
             // monthCalendar
             // 
@@ -41,6 +42,8 @@
             monthCalendar.Name = "monthCalendar";
             monthCalendar.TabIndex = 0;
             monthCalendar.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.DateSelectedEvent);
+            UpdateBoldedDates();
+
             // 
             // exerciseCheckBox
             // 
@@ -74,20 +77,20 @@
             // 
             // button1
             // 
-            button1.Location = new Point(463, 288);
-            button1.Name = "button1";
-            button1.Size = new Size(112, 34);
-            button1.TabIndex = 4;
-            button1.Text = "Salvar";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += Button1_Click;
+            saveButton.Location = new Point(463, 288);
+            saveButton.Name = "saveButton";
+            saveButton.Size = new Size(112, 34);
+            saveButton.TabIndex = 4;
+            saveButton.Text = "Salvar";
+            saveButton.UseVisualStyleBackColor = true;
+            saveButton.Click += Save_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(button1);
+            Controls.Add(saveButton);
             Controls.Add(workWithFocusCheckBox);
             Controls.Add(studyCheckBox);
             Controls.Add(exerciseCheckBox);
@@ -98,7 +101,7 @@
             PerformLayout();
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void Save_Click(object sender, EventArgs e)
         {
             DateTime dt = monthCalendar.SelectionStart.Date;
             string year = dt.Year.ToString();
@@ -154,6 +157,37 @@
             return answers;
         }
 
+        private void UpdateBoldedDates()
+        {
+            int currentMonth = DateTime.Now.Month;
+            int currentYear = DateTime.Now.Year;
+            int currentDay = DateTime.Now.Day;
+
+
+            for (int i = 1; i <= currentDay; i++) 
+            {
+                string answersFullPath = $"{AnswersPath}\\{currentMonth}{i}.txt";
+
+                if (File.Exists(answersFullPath))
+                {
+                    using (StreamReader inputFile = new StreamReader(answersFullPath))
+                    {
+                        string[] lines = inputFile.ReadToEnd().Split('\n');
+                        bool Exercise = Boolean.Parse(lines[0]);
+                        bool Study = Boolean.Parse(lines[1]);
+                        bool Focus = Boolean.Parse(lines[2]);
+
+                        if (Exercise && Study && Focus) 
+                        {
+                            monthCalendar.AddBoldedDate(new DateTime(currentYear, currentMonth, i));
+                        }
+                    }
+                }
+            }
+
+            monthCalendar.UpdateBoldedDates();
+        }
+
         #endregion
 
         private const string AnswersPath = "C:\\Check_Progress";
@@ -161,6 +195,6 @@
         private CheckBox exerciseCheckBox;
         private CheckBox studyCheckBox;
         private CheckBox workWithFocusCheckBox;
-        private Button button1;
+        private Button saveButton;
     }
 }
