@@ -102,7 +102,7 @@
         {
             DateTime dt = monthCalendar.SelectionStart.Date;
             string year = dt.Year.ToString();
-            string filename = AnswersPath + String.Format("\\{0}{1}.txt", dt.Month.ToString(), dt.Day.ToString());
+            string filename = $"{AnswersPath}\\{dt.Month.ToString()}{dt.Day.ToString()}.txt";
             using (StreamWriter outputFile = new StreamWriter(filename)) {
                 outputFile.WriteLine(exerciseCheckBox.Checked);
                 outputFile.WriteLine(studyCheckBox.Checked);
@@ -124,6 +124,8 @@
         private Dictionary<string, bool> GetAnswersByDate(DateTime selectedDate)
         {
             // Quando as respostas estiverem sendo armazenadas, recuperar aqui
+
+            string answersFullPath = $"{AnswersPath}\\{selectedDate.Month.ToString()}{selectedDate.Day.ToString()}.txt";
             Dictionary<string, bool> answers = new Dictionary<string, bool>();
             answers.Add("Exercise", true);
             answers.Add("Study", true);
