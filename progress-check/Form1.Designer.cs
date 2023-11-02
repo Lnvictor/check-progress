@@ -105,9 +105,19 @@
             string filename = $"{AnswersPath}\\{dt.Month.ToString()}{dt.Day.ToString()}.txt";
             using (StreamWriter outputFile = new StreamWriter(filename)) {
                 outputFile.WriteLine(exerciseCheckBox.Checked);
-                outputFile.WriteLine(studyCheckBox.Checked);
                 outputFile.WriteLine(workWithFocusCheckBox.Checked);
+                outputFile.WriteLine(studyCheckBox.Checked);
             }
+
+            if (exerciseCheckBox.Checked && workWithFocusCheckBox.Checked && studyCheckBox.Checked)
+            {
+                monthCalendar.AddBoldedDate(dt);
+            }
+            else
+            {
+                monthCalendar.RemoveBoldedDate(dt);
+            }
+            monthCalendar.UpdateBoldedDates();
         }
 
         private void DateSelectedEvent(object sender, DateRangeEventArgs e)
