@@ -1,11 +1,24 @@
-﻿namespace progress_check
+﻿using DatabaseUtils;
+using DatabaseUtils.Utils;
+
+namespace progress_check
 {
     partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
         /// </summary>
+        /// 
+
+        private const string IconPath = "C:\\Users\\victor.barbosa\\Documents\\personal\\progress-check\\icon.ico";
+        private const string AnswersPath = "C:\\Check_Progress";
+
         private System.ComponentModel.IContainer components = null;
+        private MonthCalendar monthCalendar;
+        private CheckBox exerciseCheckBox;
+        private CheckBox studyCheckBox;
+        private CheckBox workWithFocusCheckBox;
+        private Button saveButton;
 
         /// <summary>
         ///  Clean up any resources being used.
@@ -28,6 +41,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            Icon icon = Icon.ExtractAssociatedIcon(IconPath);
+            this.Icon = icon;
+
+
             monthCalendar = new MonthCalendar();
             exerciseCheckBox = new CheckBox();
             studyCheckBox = new CheckBox();
@@ -35,18 +52,12 @@
             saveButton = new Button();
             SuspendLayout();
 
-            // 
-            // monthCalendar
-            // 
             monthCalendar.Location = new Point(27, 66);
             monthCalendar.Name = "monthCalendar";
             monthCalendar.TabIndex = 0;
             monthCalendar.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.DateSelectedEvent);
             UpdateBoldedDates();
 
-            // 
-            // exerciseCheckBox
-            // 
             exerciseCheckBox.AutoSize = true;
             exerciseCheckBox.Location = new Point(469, 94);
             exerciseCheckBox.Name = "exerciseCheckBox";
@@ -54,9 +65,7 @@
             exerciseCheckBox.TabIndex = 1;
             exerciseCheckBox.Text = "Exercise";
             exerciseCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // studyCheckBox
-            // 
+
             studyCheckBox.AutoSize = true;
             studyCheckBox.Location = new Point(469, 164);
             studyCheckBox.Name = "studyCheckBox";
@@ -64,9 +73,7 @@
             studyCheckBox.TabIndex = 2;
             studyCheckBox.Text = "Study";
             studyCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // workWithFocusCheckBox
-            // 
+
             workWithFocusCheckBox.AutoSize = true;
             workWithFocusCheckBox.Location = new Point(469, 129);
             workWithFocusCheckBox.Name = "workWithFocusCheckBox";
@@ -74,9 +81,7 @@
             workWithFocusCheckBox.TabIndex = 3;
             workWithFocusCheckBox.Text = "Work Focused";
             workWithFocusCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
+
             saveButton.Location = new Point(463, 288);
             saveButton.Name = "saveButton";
             saveButton.Size = new Size(112, 34);
@@ -84,9 +89,7 @@
             saveButton.Text = "Salvar";
             saveButton.UseVisualStyleBackColor = true;
             saveButton.Click += Save_Click;
-            // 
-            // Form1
-            // 
+
             AutoScaleDimensions = new SizeF(10F, 25F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
@@ -100,12 +103,13 @@
             ResumeLayout(false);
             PerformLayout();
         }
+        #endregion
 
         private void Save_Click(object sender, EventArgs e)
         {
             DateTime dt = monthCalendar.SelectionStart.Date;
             string year = dt.Year.ToString();
-            string filename = $"{AnswersPath}\\{dt.Month.ToString()}{dt.Day.ToString()}.txt";
+            string filename = $"{AnswersPath}\\{dt.Year.ToString()}{dt.Month.ToString()}{dt.Day.ToString()}.txt";
             using (StreamWriter outputFile = new StreamWriter(filename)) {
                 outputFile.WriteLine(exerciseCheckBox.Checked);
                 outputFile.WriteLine(workWithFocusCheckBox.Checked);
@@ -127,34 +131,11 @@
         {
             // Here we retrieve answers for the day
             var selectedDate = e.End.Date;
-            var answers = this.GetAnswersByDate(selectedDate);
+            var answers = FileReader.ReadDayFromFile(selectedDate);
 
-            this.exerciseCheckBox.Checked = answers.GetValueOrDefault("Exercise", false);
-            this.studyCheckBox.Checked = answers.GetValueOrDefault("Study", false);
-            this.workWithFocusCheckBox.Checked = answers.GetValueOrDefault("Focus", false);
-        }
-
-        private Dictionary<string, bool> GetAnswersByDate(DateTime selectedDate)
-        {
-            // Quando as respostas estiverem sendo armazenadas, recuperar aqui
-
-            string answersFullPath = $"{AnswersPath}\\{selectedDate.Month.ToString()}{selectedDate.Day.ToString()}.txt";
-            Dictionary<string, bool> answers = new Dictionary<string, bool>();
-
-            if (File.Exists(answersFullPath))
-            {
-                using (StreamReader inputFile = new StreamReader(answersFullPath))
-                {
-                    string text = inputFile.ReadToEnd();
-                    string[] lines = text.Split('\n');
-
-                    answers.Add("Exercise", Boolean.Parse(lines[0]));
-                    answers.Add("Study", Boolean.Parse(lines[1]));
-                    answers.Add("Focus", Boolean.Parse(lines[2]));
-                }
-            }
-
-            return answers;
+            this.exerciseCheckBox.Checked = answers.Exercise;
+            this.studyCheckBox.Checked = answers.Study;
+            this.workWithFocusCheckBox.Checked = answers.WorkFocused;
         }
 
         private void UpdateBoldedDates()
@@ -162,39 +143,21 @@
             int currentMonth = DateTime.Now.Month;
             int currentYear = DateTime.Now.Year;
             int currentDay = DateTime.Now.Day;
+            DateTime currentDt;
 
 
             for (int i = 1; i <= currentDay; i++) 
             {
-                string answersFullPath = $"{AnswersPath}\\{currentMonth}{i}.txt";
+                currentDt = new DateTime(currentYear, currentMonth, i);
+                var answers = FileReader.ReadDayFromFile(currentDt);
 
-                if (File.Exists(answersFullPath))
+                if (answers.Exercise && answers.Study && answers.WorkFocused)
                 {
-                    using (StreamReader inputFile = new StreamReader(answersFullPath))
-                    {
-                        string[] lines = inputFile.ReadToEnd().Split('\n');
-                        bool Exercise = Boolean.Parse(lines[0]);
-                        bool Study = Boolean.Parse(lines[1]);
-                        bool Focus = Boolean.Parse(lines[2]);
-
-                        if (Exercise && Study && Focus) 
-                        {
-                            monthCalendar.AddBoldedDate(new DateTime(currentYear, currentMonth, i));
-                        }
-                    }
+                    monthCalendar.AddBoldedDate(currentDt);
                 }
             }
 
             monthCalendar.UpdateBoldedDates();
         }
-
-        #endregion
-
-        private const string AnswersPath = "C:\\Check_Progress";
-        private MonthCalendar monthCalendar;
-        private CheckBox exerciseCheckBox;
-        private CheckBox studyCheckBox;
-        private CheckBox workWithFocusCheckBox;
-        private Button saveButton;
     }
 }
