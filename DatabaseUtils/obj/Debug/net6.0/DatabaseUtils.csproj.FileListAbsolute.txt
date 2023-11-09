@@ -1,0 +1,12 @@
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\bin\Debug\net6.0\DatabaseUtils.deps.json
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\bin\Debug\net6.0\DatabaseUtils.dll
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\bin\Debug\net6.0\DatabaseUtils.pdb
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.csproj.AssemblyReference.cache
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.AssemblyInfoInputs.cache
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.AssemblyInfo.cs
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.csproj.CoreCompileInputs.cache
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.dll
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\refint\DatabaseUtils.dll
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\DatabaseUtils.pdb
+C:\Users\victor.barbosa\Documents\personal\progress-check\DatabaseUtils\obj\Debug\net6.0\ref\DatabaseUtils.dll
